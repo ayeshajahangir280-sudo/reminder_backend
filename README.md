@@ -9,7 +9,8 @@ Django REST backend for the React Document Expiry Reminder app.
 3. Copy `.env.example` to `.env` and update PostgreSQL, Redis, email, and secret values.
 4. Create the PostgreSQL database named in `DATABASE_URL`.
 5. Run migrations: `python manage.py migrate`
-6. Start the API: `python manage.py runserver`
+6. Start the API locally: `python manage.py runserver 0.0.0.0:8000`
+   For a container deployment, use: `gunicorn config.wsgi:application --bind 0.0.0.0:$PORT`
 7. Start workers:
    - `celery -A config worker -l info`
    - `celery -A config beat -l info`
