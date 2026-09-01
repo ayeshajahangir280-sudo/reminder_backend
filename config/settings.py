@@ -109,10 +109,12 @@ CELERY_BEAT_SCHEDULE = {
 }
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = os.getenv("EMAIL_HOST", "localhost")
-EMAIL_PORT = int(os.getenv("EMAIL_PORT", "25"))
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
-EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "False").lower() == "true"
-DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "Doc Sentinel <noreply@example.com>")
+EMAIL_HOST = os.getenv("SMTP_HOST", os.getenv("EMAIL_HOST", "localhost"))
+EMAIL_PORT = int(os.getenv("SMTP_PORT", os.getenv("EMAIL_PORT", "25")))
+EMAIL_HOST_USER = os.getenv("SMTP_EMAIL", os.getenv("EMAIL_HOST_USER", ""))
+EMAIL_HOST_PASSWORD = os.getenv("SMTP_APP_PASSWORD", os.getenv("EMAIL_HOST_PASSWORD", ""))
+EMAIL_USE_SSL = EMAIL_PORT == 465
+EMAIL_USE_TLS = not EMAIL_USE_SSL and os.getenv("EMAIL_USE_TLS", "False").lower() == "true"
+DEFAULT_FROM_EMAIL = os.getenv("ORDER_EMAIL_FROM", os.getenv("DEFAULT_FROM_EMAIL", "Doc Sentinel <noreply@example.com>"))
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
 MAX_UPLOAD_SIZE_MB = int(os.getenv("MAX_UPLOAD_SIZE_MB", "10"))
