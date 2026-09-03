@@ -2,7 +2,7 @@ from datetime import date, timedelta
 
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import TestCase
+from django.test import Client, TestCase
 
 from documents.models import Document
 from documents.services.document_scanner import DocumentScanner
@@ -45,3 +45,16 @@ class CoreBehaviorTests(TestCase):
         upload = SimpleUploadedFile("doc.pdf", b"%PDF-1.4\n%%EOF", content_type="application/pdf")
         result = DocumentScanner().scan(upload)
         self.assertIsNone(result["extracted_data"]["expiry_date"])
+
+    def test_duplicate_registration_returns_validation_error(self):
+        client = Client()
+        payload = {
+            "name": "Existing User",
+            "email": self.user.email.upper(),
+            "password": "pass12345X",
+        }
+
+        response = client.post("/api/auth/register/", payload, content_type="application/json")
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("email", response.json())
